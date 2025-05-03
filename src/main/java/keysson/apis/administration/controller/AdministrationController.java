@@ -1,7 +1,7 @@
 package keysson.apis.administration.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import keysson.apis.administration.dto.request.requestAlteraStatusConta;
+import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import org.springframework.http.ResponseEntity;
