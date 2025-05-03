@@ -1,12 +1,11 @@
 package keysson.apis.administration.controller;
 
-import keysson.apis.administration.dto.request.requestAlteraStatusConta;
+import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.service.AdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class AdministrationControllerImpl implements AdministrationController{
     }
 
     @Override
-    public void putStatusAccount(int numeroConta, requestAlteraStatusConta requestBody) throws BusinessRuleException {
+    public void putStatusAccount(int numeroConta, RequestAlteraStatusConta requestBody) throws BusinessRuleException {
         administrationService.changeStatus(requestBody.getNewStatus(), numeroConta);
     }
 
