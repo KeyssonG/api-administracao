@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: port-forward-job
+  annotations:
+    "argocd.argoproj.io/hook": PostSync  # Define que o Job será executado após a sincronização
+spec:
+  template:
+    spec:
+      containers:
+        - name: kubectl-container
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/bash
+            - -c
+            - |
+              kubectl port-forward svc/administracao-service 8086:8086 -n master
+      restartPolicy: Never
