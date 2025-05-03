@@ -4,7 +4,7 @@ metadata:
   name: administracao-service
 spec:
   selector:
-    app: administracao-deployment
+    app: administracao
   ports:
     - protocol: TCP
       port: 8086
