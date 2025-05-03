@@ -1,6 +1,7 @@
 package keysson.apis.administration.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+
 import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
@@ -26,6 +27,6 @@ public interface AdministrationController {
     )
     void putStatusAccount(
             @RequestParam(required = false, defaultValue = "0") int numeroConta,
-            @RequestBody requestAlteraStatusConta requestBody
+            @RequestBody RequestAlteraStatusConta requestBody
     ) throws BusinessRuleException;
 }
