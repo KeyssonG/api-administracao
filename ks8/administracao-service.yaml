@@ -7,6 +7,6 @@ spec:
     app: administracao-deployment
   ports:
     - protocol: TCP
-      port: 8086
+      port: 80
       targetPort: 8086
   type: LoadBalancer  # Ou NodePort

@@ -18,6 +18,12 @@ public class AdministrationRepository {
             SELECT ID, CNPJ, NAME, STATUS, DESCRICAO_STATUS, NUMERO_CONTA FROM COMPANIES WHERE STATUS = 1
             """;
 
+    private String UPDATE_ACCOUNT_STATUS = """
+            UPDATE companies SET status = ? WHERE numero_conta = ?
+            """;
+
+
+
     public List<EmpresaPendenteDTO> findPendingCompanies(int numeroConta) {
         StringBuilder sql = new StringBuilder(PEDING_COMPANIES);
         List<Object> params = new ArrayList<>();
@@ -39,5 +45,9 @@ public class AdministrationRepository {
                         .numeroConta(rs.getInt("NUMERO_CONTA"))
                         .build()
         );
+    }
+
+    public void newAccontStatus (int status, int conta) {
+        jdbcTemplate.update(UPDATE_ACCOUNT_STATUS, status, conta);
     }
 }

@@ -25,7 +25,13 @@ public class AdministrationService {
     }
 
     public ResponseEntity<List<EmpresaPendenteDTO>> pendingCompany(int conta) throws BusinessRuleException {
+
         List<EmpresaPendenteDTO> empresasStatusPendente = administrationRepository.findPendingCompanies(conta);
         return ResponseEntity.ok(empresasStatusPendente);
     };
+
+    public void changeStatus(int newStatus, int conta) throws BusinessRuleException {
+        administrationRepository.newAccontStatus(newStatus, conta);
+    }
+
 }
