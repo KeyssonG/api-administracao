@@ -8,7 +8,7 @@ pipeline {
     }
 
     triggers {
-        pollSCM('* * * * *') // A cada minuto (ajustar conforme necessário)
+        pollSCM('* * * * *')
     }
 
     options {
@@ -28,17 +28,15 @@ pipeline {
         stage('Checkout do Código') {
             steps {
                 git credentialsId: 'Github',
-                    url: 'https://github.com/KeyssonG/api-administracao.git ',
+                    url: 'https://github.com/KeyssonG/api-administracao.git',
                     branch: 'master'
             }
         }
 
         stage('Build da Imagem Docker') {
             steps {
-                bat """
-                    nerdctl build -t %DOCKERHUB_IMAGE%:%IMAGE_TAG% .
-                    nerdctl tag %DOCKERHUB_IMAGE%:%IMAGE_TAG% %DOCKERHUB_IMAGE%:latest
-                """
+                bat "docker build -t %DOCKERHUB_IMAGE%:%IMAGE_TAG% ."
+                bat "docker tag %DOCKERHUB_IMAGE%:%IMAGE_TAG% %DOCKERHUB_IMAGE%:latest"
             }
         }
 
@@ -46,9 +44,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat """
-                        echo %DOCKER_PASS% | nerdctl login -u %DOCKER_USER% --password-stdin
-                        nerdctl push %DOCKERHUB_IMAGE%:%IMAGE_TAG%
-                        nerdctl push %DOCKERHUB_IMAGE%:latest
+                        echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin
+                        docker push %DOCKERHUB_IMAGE%:%IMAGE_TAG%
+                        docker push %DOCKERHUB_IMAGE%:latest
                     """
                 }
             }
@@ -84,7 +82,7 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline concluída com sucesso! A imagem '%DOCKERHUB_IMAGE%:latest' foi atualizada e o ArgoCD aplicará as alterações automaticamente. 🚀"
+            echo "Pipeline concluída com sucesso! A imagem 'keyssong/company:latest' foi atualizada e o ArgoCD aplicará as alterações automaticamente. 🚀"
         }
         failure {
             echo "Erro na pipeline. Confira os logs para mais detalhes."
