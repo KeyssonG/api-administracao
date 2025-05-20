@@ -3,12 +3,12 @@ pipeline {
 
     environment {
         DOCKERHUB_IMAGE = "keyssong/administracao"
+        DEPLOYMENT_FILE = "k8s\\administracao-deployment.yaml"
         IMAGE_TAG = "latest"
-        DEPLOYMENT_FILE = "k8s/administracao-deployment.yaml"
     }
 
     triggers {
-        pollSCM('H/5 * * * *') // Poll a cada 5 minutos
+        pollSCM('* * * * *') // A cada minuto (ajustar conforme necessário)
     }
 
     options {
@@ -28,8 +28,17 @@ pipeline {
         stage('Checkout do Código') {
             steps {
                 git credentialsId: 'Github',
-                     url: 'https://github.com/KeyssonG/api-administracao.git ',
-                     branch: 'master'
+                    url: 'https://github.com/KeyssonG/api-administracao.git ',
+                    branch: 'master'
+            }
+        }
+
+        stage('Build da Imagem Docker') {
+            steps {
+                bat """
+                    nerdctl build -t %DOCKERHUB_IMAGE%:%IMAGE_TAG% .
+                    nerdctl tag %DOCKERHUB_IMAGE%:%IMAGE_TAG% %DOCKERHUB_IMAGE%:latest
+                """
             }
         }
 
@@ -37,9 +46,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     bat """
-                        docker login -u %DOCKER_USER% -p %DOCKER_PASS%
-                        docker push %DOCKERHUB_IMAGE%:%IMAGE_TAG%
-                        docker push %DOCKERHUB_IMAGE%:latest
+                        echo %DOCKER_PASS% | nerdctl login -u %DOCKER_USER% --password-stdin
+                        nerdctl push %DOCKERHUB_IMAGE%:%IMAGE_TAG%
+                        nerdctl push %DOCKERHUB_IMAGE%:latest
                     """
                 }
             }
@@ -50,12 +59,10 @@ pipeline {
                 script {
                     def commitSuccess = false
 
-                    // Substituir a imagem no deployment.yaml
                     bat """
                         powershell -Command "\$content = Get-Content '${DEPLOYMENT_FILE}'; \$newContent = \$content -replace 'image: .*', 'image: ${DOCKERHUB_IMAGE}:${IMAGE_TAG}'; if (-not (\$content -eq \$newContent)) { \$newContent | Set-Content '${DEPLOYMENT_FILE}' }"
                     """
 
-                    // Adicionar e commitar o arquivo YAML se houver alteração
                     bat """
                         git config user.email "jenkins@pipeline.com"
                         git config user.name "Jenkins"
@@ -63,7 +70,6 @@ pipeline {
                         git diff --cached --quiet || git commit -m "Atualiza imagem Docker para latest"
                     """
 
-                    // Verificar se houve commit
                     commitSuccess = bat(script: 'git diff --cached --quiet || echo "changed"', returnStdout: true).trim() == "changed"
 
                     if (commitSuccess) {
@@ -74,18 +80,11 @@ pipeline {
                 }
             }
         }
-
-        stage('Aplicar Alterações no Cluster Kubernetes') {
-            steps {
-                // Aplicar o deployment atualizado
-                bat "kubectl apply -f ${DEPLOYMENT_FILE}"
-            }
-        }
     }
 
     post {
         success {
-            echo "Pipeline concluída com sucesso! A imagem '${DOCKERHUB_IMAGE}:latest' foi aplicada no cluster Kubernetes. 🚀"
+            echo "Pipeline concluída com sucesso! A imagem '%DOCKERHUB_IMAGE%:latest' foi atualizada e o ArgoCD aplicará as alterações automaticamente. 🚀"
         }
         failure {
             echo "Erro na pipeline. Confira os logs para mais detalhes."
