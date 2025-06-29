@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import keysson.apis.administration.dto.AlteraStatusEvent;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
+import keysson.apis.administration.dto.response.EmpresasStatusDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.repository.AdministrationRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -51,6 +52,10 @@ public class AdministrationService {
             throw new RuntimeException("Erro ao alterar o status.");
         }
 
+    }
+
+    public List<EmpresasStatusDTO> StatusCompanies() {
+        return administrationRepository.findStatusCompany();
     }
 
 }

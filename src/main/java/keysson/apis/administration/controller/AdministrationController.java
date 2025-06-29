@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 
 import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
+import keysson.apis.administration.dto.response.EmpresasStatusDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,4 +32,13 @@ public interface AdministrationController {
             @RequestParam(required = false, defaultValue = "0") int numeroConta,
             @RequestBody RequestAlteraStatusConta requestBody
     ) throws BusinessRuleException;
+
+
+    @GetMapping("/empresa/status")
+    @Operation(
+            summary = "Busca empresas com status pendente.",
+            description = "Endpoint para verificar empresas pendentes"
+    )
+    List<EmpresasStatusDTO> getStatusCompanies(
+    )throws BusinessRuleException;
 }
