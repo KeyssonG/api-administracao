@@ -32,7 +32,7 @@ public class AdministrationControllerImpl implements AdministrationController{
     }
 
     @Override
-    public List<EmpresasStatusDTO> getStatusCompanies() throws BusinessRuleException {
+    public EmpresasStatusDTO getStatusCompanies() throws BusinessRuleException {
         return administrationService.StatusCompanies();
     }
 

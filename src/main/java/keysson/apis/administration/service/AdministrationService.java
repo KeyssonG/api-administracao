@@ -54,7 +54,7 @@ public class AdministrationService {
 
     }
 
-    public List<EmpresasStatusDTO> StatusCompanies() {
+    public EmpresasStatusDTO StatusCompanies() {
         return administrationRepository.findStatusCompany();
     }
 

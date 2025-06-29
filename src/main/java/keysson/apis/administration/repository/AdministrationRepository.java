@@ -63,9 +63,9 @@ public class AdministrationRepository {
         jdbcTemplate.update(UPDATE_ACCOUNT_STATUS, status, conta);
     }
 
-    public List<EmpresasStatusDTO> findStatusCompany() {
+    public EmpresasStatusDTO findStatusCompany() {
         try {
-            return jdbcTemplate.query(FIND_STATUS_COMPANY, new EmpresasStatusMapper());
+            return jdbcTemplate.queryForObject(FIND_STATUS_COMPANY, new EmpresasStatusMapper());
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar status das empresas", e);
         }

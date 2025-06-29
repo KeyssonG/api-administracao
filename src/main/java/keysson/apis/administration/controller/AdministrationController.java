@@ -39,6 +39,6 @@ public interface AdministrationController {
             summary = "Busca empresas com status pendente.",
             description = "Endpoint para verificar empresas pendentes"
     )
-    List<EmpresasStatusDTO> getStatusCompanies(
+    EmpresasStatusDTO getStatusCompanies(
     )throws BusinessRuleException;
 }
