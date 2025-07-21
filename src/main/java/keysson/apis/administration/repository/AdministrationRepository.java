@@ -3,7 +3,7 @@ package keysson.apis.administration.repository;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
-import keysson.apis.mapper.EmpresasStatusMapper;
+import keysson.apis.administration.mapper.EmpresasStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -33,6 +33,10 @@ public class AdministrationRepository {
               count(case when status = 2 then 1 end) as ativo,
               count(case when status = 3 then 1 end) as rejeitado
             from companies	
+            """;
+
+    private String SQL_NEW_DEPARTMENT = """
+            INSERT INTO DEPARTAMENTOS (company_id, departamento) VALUES (?, ?)
             """;
 
 
@@ -68,6 +72,14 @@ public class AdministrationRepository {
             return jdbcTemplate.queryForObject(FIND_STATUS_COMPANY, new EmpresasStatusMapper());
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar status das empresas", e);
+        }
+    }
+
+    public void registerNewDepartment(int idEmpresa, String nomeDepartamento) {
+        try {
+            jdbcTemplate.update(SQL_NEW_DEPARTMENT, idEmpresa, nomeDepartamento);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao registrar novo departamento: " + e.getMessage(), e);
         }
     }
 }

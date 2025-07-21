@@ -1,12 +1,14 @@
 package keysson.apis.administration.controller;
 
 import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
+import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.service.AdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -34,6 +36,11 @@ public class AdministrationControllerImpl implements AdministrationController{
     @Override
     public EmpresasStatusDTO getStatusCompanies() throws BusinessRuleException {
         return administrationService.StatusCompanies();
+    }
+
+    @Override
+    public void postDepartment(@RequestBody RequestCadastrarDepartamento requestBody) throws BusinessRuleException {
+        administrationService.registerDepartment(requestBody);
     }
 
 

@@ -3,6 +3,7 @@ package keysson.apis.administration.controller;
 import io.swagger.v3.oas.annotations.Operation;
 
 import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
+import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
@@ -21,7 +22,7 @@ public interface AdministrationController {
     )
     ResponseEntity<List<EmpresaPendenteDTO>> getPendingCompany(
             @RequestParam(required = false, defaultValue = "0") int numeroConta
-    )throws BusinessRuleException;
+    ) throws BusinessRuleException;
 
     @PutMapping("/status/conta")
     @Operation(
@@ -40,5 +41,14 @@ public interface AdministrationController {
             description = "Endpoint para verificar empresas pendentes"
     )
     EmpresasStatusDTO getStatusCompanies(
-    )throws BusinessRuleException;
+    ) throws BusinessRuleException;
+
+    @PostMapping("/departamento")
+    @Operation(
+            summary = "Cria um novo departamento.",
+            description = "Endpoint para criar um novo departamento"
+    )
+    void postDepartment(
+            @RequestBody RequestCadastrarDepartamento requestBody
+    ) throws BusinessRuleException;
 }

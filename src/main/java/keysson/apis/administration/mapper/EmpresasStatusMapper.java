@@ -1,4 +1,4 @@
-package keysson.apis.mapper;
+package keysson.apis.administration.mapper;
 
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
 import org.springframework.jdbc.core.RowMapper;

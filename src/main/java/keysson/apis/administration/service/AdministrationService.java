@@ -2,7 +2,9 @@ package keysson.apis.administration.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.http.HttpServletRequest;
 import keysson.apis.administration.dto.AlteraStatusEvent;
+import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
@@ -13,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static keysson.apis.administration.exception.enums.ErrorCode.ERROR_CADASTRO_DEPARTAMENTO;
 
 @Service
 public class AdministrationService {
@@ -26,7 +30,13 @@ public class AdministrationService {
     private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public AdministrationService(AdministrationRepository administrationRepository, RabbitTemplate rabbitTemplate) {
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private HttpServletRequest httpRequest;
+
+    @Autowired
+    public AdministrationService(AdministrationRepository administrationRepository, RabbitTemplate rabbitTemplate, JwtUtil jwtUtil) {
         this.administrationRepository = administrationRepository;
         this.rabbitTemplate = rabbitTemplate;
     }
@@ -56,6 +66,27 @@ public class AdministrationService {
 
     public EmpresasStatusDTO StatusCompanies() {
         return administrationRepository.findStatusCompany();
+    }
+
+    public void registerDepartment(RequestCadastrarDepartamento requestBody) throws BusinessRuleException {
+
+        String token =(String)httpRequest.getAttribute("CleanJwt");
+
+        Integer idEmpresa = jwtUtil.extractCompanyId(token);
+
+        if (idEmpresa == null) {
+            throw new IllegalArgumentException("ID da empresa não encontrado no token.");
+        }
+
+        if (requestBody.getNomeDepartamento() == null || requestBody.getNomeDepartamento().isEmpty()) {
+            throw new IllegalArgumentException("O nome do departamento não pode ser vazio.");
+        }
+
+        try {
+            administrationRepository.registerNewDepartment(idEmpresa, requestBody.getNomeDepartamento());
+        } catch (Exception e) {
+            throw new BusinessRuleException(ERROR_CADASTRO_DEPARTAMENTO);
+        }
     }
 
 }
