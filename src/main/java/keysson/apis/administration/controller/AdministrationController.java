@@ -6,6 +6,7 @@ import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
 import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.ResponseDepartamento;
 import keysson.apis.administration.exception.BusinessRuleException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +51,13 @@ public interface AdministrationController {
     )
     void postDepartment(
             @RequestBody RequestCadastrarDepartamento requestBody
+    ) throws BusinessRuleException;
+
+    @GetMapping("/departamento")
+    @Operation(
+            summary = "Busca todos os departamentos por empresa.",
+            description = "Endpoint para buscar todos os departamentos"
+    )
+    List<ResponseDepartamento> getAllDepartments(
     ) throws BusinessRuleException;
 }

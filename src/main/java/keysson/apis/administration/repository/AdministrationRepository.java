@@ -3,6 +3,7 @@ package keysson.apis.administration.repository;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.ResponseDepartamento;
 import keysson.apis.administration.mapper.EmpresasStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,6 +38,10 @@ public class AdministrationRepository {
 
     private String SQL_NEW_DEPARTMENT = """
             INSERT INTO DEPARTAMENTOS (company_id, departamento) VALUES (?, ?)
+            """;
+
+    private String SQL_GET_DEPARTMENTS_BY_COMPANY = """
+            SELECT DEPARTAMENTO FROM DEPARTAMENTOS WHERE COMPANY_ID = ?
             """;
 
 
@@ -80,6 +85,19 @@ public class AdministrationRepository {
             jdbcTemplate.update(SQL_NEW_DEPARTMENT, idEmpresa, nomeDepartamento);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao registrar novo departamento: " + e.getMessage(), e);
+        }
+    }
+
+    public List<ResponseDepartamento> getDepartmentsByCompany(int idEmpresa) {
+        try {
+            List<String> departamentos = jdbcTemplate.queryForList(SQL_GET_DEPARTMENTS_BY_COMPANY, new Object[]{idEmpresa}, String.class);
+            List<ResponseDepartamento> responseDepartamentos = new ArrayList<>();
+            for (String departamento : departamentos) {
+                responseDepartamentos.add(new ResponseDepartamento(departamento));
+            }
+            return responseDepartamentos;
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar departamentos por empresa: " + e.getMessage(), e);
         }
     }
 }

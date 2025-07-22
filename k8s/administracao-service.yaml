@@ -10,4 +10,4 @@ spec:
       port: 8086
       targetPort: 8086
       nodePort: 31000   # Porta válida no intervalo 30000-32767
-  type: NodePort
+  type: LoadBalancer

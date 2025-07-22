@@ -7,6 +7,7 @@ import keysson.apis.administration.dto.AlteraStatusEvent;
 import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
 import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.ResponseDepartamento;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.repository.AdministrationRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static keysson.apis.administration.exception.enums.ErrorCode.ERROR_BUSCAR_DEPARTAMENTO;
 import static keysson.apis.administration.exception.enums.ErrorCode.ERROR_CADASTRO_DEPARTAMENTO;
 
 @Service
@@ -86,6 +88,22 @@ public class AdministrationService {
             administrationRepository.registerNewDepartment(idEmpresa, requestBody.getNomeDepartamento());
         } catch (Exception e) {
             throw new BusinessRuleException(ERROR_CADASTRO_DEPARTAMENTO);
+        }
+    }
+
+    public List<ResponseDepartamento> searchAllDepartments() throws BusinessRuleException {
+        String token = (String) httpRequest.getAttribute("CleanJwt");
+
+        Integer idEmpresa = jwtUtil.extractCompanyId(token);
+
+        if (idEmpresa == null) {
+            throw new IllegalArgumentException("ID da empresa não encontrado no token.");
+        }
+
+        try {
+            return administrationRepository.getDepartmentsByCompany(idEmpresa);
+        } catch (Exception e) {
+            throw new BusinessRuleException(ERROR_BUSCAR_DEPARTAMENTO);
         }
     }
 

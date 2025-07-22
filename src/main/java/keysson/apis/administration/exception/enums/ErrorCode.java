@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ErrorCode {
         ERROR_CADASTRO_DEPARTAMENTO("Erro ao cadastrar departamento", HttpStatus.BAD_REQUEST),
+        ERROR_BUSCAR_DEPARTAMENTO("Não foi encontrado departamentos parametrizados para está empresa", HttpStatus.NOT_FOUND),
     ;
     private final String message;
     private final HttpStatus status;
