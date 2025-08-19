@@ -25,13 +25,13 @@ public class AdministrationControllerImpl implements AdministrationController{
     }
 
     @Override
-    public ResponseEntity<List<EmpresaPendenteDTO>> getPendingCompany(int numeroConta) throws BusinessRuleException {
-        return administrationService.pendingCompany(numeroConta);
+    public ResponseEntity<List<EmpresaPendenteDTO>> getPendingCompany(int accountNumber) throws BusinessRuleException {
+        return administrationService.pendingCompany(accountNumber);
     }
 
     @Override
     public void putStatusAccount(int numeroConta, RequestAlteraStatusConta requestBody) throws BusinessRuleException {
-        administrationService.changeStatus(requestBody.getNewStatus(), numeroConta);
+        administrationService.changeStatus(requestBody.getNewStatus(), accountNumber);
     }
 
     @Override
