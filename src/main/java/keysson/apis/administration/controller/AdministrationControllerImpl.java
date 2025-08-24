@@ -2,8 +2,9 @@ package keysson.apis.administration.controller;
 
 import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
 import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
-import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
+import keysson.apis.administration.dto.request.RequestDeletarDepartamento;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.ResponseDepartamento;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.service.AdministrationService;
@@ -25,12 +26,12 @@ public class AdministrationControllerImpl implements AdministrationController{
     }
 
     @Override
-    public ResponseEntity<List<EmpresaPendenteDTO>> getPendingCompany(int accountNumber) throws BusinessRuleException {
+    public ResponseEntity<List<PendingCompanyDTO>> getPendingCompany(int accountNumber) throws BusinessRuleException {
         return administrationService.pendingCompany(accountNumber);
     }
 
     @Override
-    public void putStatusAccount(int numeroConta, RequestAlteraStatusConta requestBody) throws BusinessRuleException {
+    public void putStatusAccount(int accountNumber, RequestAlteraStatusConta requestBody) throws BusinessRuleException {
         administrationService.changeStatus(requestBody.getNewStatus(), accountNumber);
     }
 
@@ -47,6 +48,11 @@ public class AdministrationControllerImpl implements AdministrationController{
     @Override
     public List<ResponseDepartamento> getAllDepartments() throws BusinessRuleException {
         return administrationService.searchAllDepartments();
+    }
+
+    @Override
+    public void deleteDepartmentById(@RequestBody RequestDeletarDepartamento requestBody) throws BusinessRuleException {
+        administrationService.deleteDepartment(requestBody);
     }
 
 

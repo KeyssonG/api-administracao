@@ -9,4 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ResponseDepartamento {
     private String nomeDepartamento;
+    private int  idDepartamento;
 }

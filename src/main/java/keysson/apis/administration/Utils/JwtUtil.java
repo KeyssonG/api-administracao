@@ -1,4 +1,4 @@
-package keysson.apis.administration.service;
+package keysson.apis.administration.Utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

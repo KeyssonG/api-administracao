@@ -1,11 +1,11 @@
 package keysson.apis.administration.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-
 import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
 import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
-import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
+import keysson.apis.administration.dto.request.RequestDeletarDepartamento;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.ResponseDepartamento;
 import keysson.apis.administration.exception.BusinessRuleException;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public interface AdministrationController {
             summary = "Busca empresas com status pendente.",
             description = "Endpoint para verificar empresas pendentes"
     )
-    ResponseEntity<List<EmpresaPendenteDTO>> getPendingCompany(
+    ResponseEntity<List<PendingCompanyDTO>> getPendingCompany(
             @RequestParam(required = false, defaultValue = "0") int numeroConta
     ) throws BusinessRuleException;
 
@@ -59,5 +59,14 @@ public interface AdministrationController {
             description = "Endpoint para buscar todos os departamentos"
     )
     List<ResponseDepartamento> getAllDepartments(
+    ) throws BusinessRuleException;
+
+    @DeleteMapping("/departamento")
+    @Operation(
+            summary = "Deleta um departamento por ID.",
+            description = "Endpoint para deletar um departamento por ID"
+    )
+    void deleteDepartmentById(
+            @RequestBody RequestDeletarDepartamento requestBody
     ) throws BusinessRuleException;
 }

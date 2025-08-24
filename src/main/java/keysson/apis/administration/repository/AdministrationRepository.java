@@ -1,9 +1,9 @@
 package keysson.apis.administration.repository;
 
-import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
-
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.ResponseDepartamento;
+import keysson.apis.administration.mapper.DepartamentosRowMapper;
 import keysson.apis.administration.mapper.EmpresasStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +19,9 @@ public class AdministrationRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private DepartamentosRowMapper departamentosRowMapper;
 
     private String PEDING_COMPANIES = """
             SELECT ID, CNPJ, NAME, STATUS, DESCRICAO_STATUS, NUMERO_CONTA FROM COMPANIES WHERE STATUS = 1
@@ -41,11 +44,14 @@ public class AdministrationRepository {
             """;
 
     private String SQL_GET_DEPARTMENTS_BY_COMPANY = """
-            SELECT DEPARTAMENTO FROM DEPARTAMENTOS WHERE COMPANY_ID = ?
+            SELECT DEPARTAMENTO, ID FROM DEPARTAMENTOS WHERE COMPANY_ID = ?
             """;
 
+    // SQL para deletar departamento por id
+    private static final String SQL_DELETE_DEPARTMENT_BY_ID = "DELETE FROM DEPARTAMENTOS WHERE ID = ?";
 
-    public List<EmpresaPendenteDTO> findPendingCompanies(int numeroConta) {
+
+    public List<PendingCompanyDTO> findPendingCompanies(int numeroConta) {
         StringBuilder sql = new StringBuilder(PEDING_COMPANIES);
         List<Object> params = new ArrayList<>();
 
@@ -57,13 +63,13 @@ public class AdministrationRepository {
         return jdbcTemplate.query(
                 sql.toString(),
                 params.toArray(),
-                (rs, rowNum) -> EmpresaPendenteDTO.builder()
+                (rs, rowNum) -> PendingCompanyDTO.builder()
                         .id(rs.getInt("ID"))
                         .cnpj(rs.getString("CNPJ"))
-                        .nome(rs.getString("NAME"))
+                        .name(rs.getString("NAME"))
                         .status(rs.getInt("STATUS"))
-                        .descricao(rs.getString("DESCRICAO_STATUS"))
-                        .numeroConta(rs.getInt("NUMERO_CONTA"))
+                        .description(rs.getString("DESCRICAO_STATUS"))
+                        .accountNumber(rs.getInt("NUMERO_CONTA"))
                         .build()
         );
     }
@@ -90,14 +96,19 @@ public class AdministrationRepository {
 
     public List<ResponseDepartamento> getDepartmentsByCompany(int idEmpresa) {
         try {
-            List<String> departamentos = jdbcTemplate.queryForList(SQL_GET_DEPARTMENTS_BY_COMPANY, new Object[]{idEmpresa}, String.class);
-            List<ResponseDepartamento> responseDepartamentos = new ArrayList<>();
-            for (String departamento : departamentos) {
-                responseDepartamentos.add(new ResponseDepartamento(departamento));
-            }
-            return responseDepartamentos;
+            return jdbcTemplate.query(SQL_GET_DEPARTMENTS_BY_COMPANY, new Object[]{idEmpresa}, departamentosRowMapper);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar departamentos por empresa: " + e.getMessage(), e);
         }
     }
+
+    public void deleteDepartmentById(int idDepartamento) {
+        try {
+            jdbcTemplate.update(SQL_DELETE_DEPARTMENT_BY_ID, idDepartamento);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao deletar departamento: " + e.getMessage(), e);
+        }
+    }
+
+
 }

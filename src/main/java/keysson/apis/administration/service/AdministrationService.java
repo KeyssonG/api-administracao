@@ -3,10 +3,12 @@ package keysson.apis.administration.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
+import keysson.apis.administration.Utils.JwtUtil;
 import keysson.apis.administration.dto.AlteraStatusEvent;
 import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
-import keysson.apis.administration.dto.response.EmpresaPendenteDTO;
+import keysson.apis.administration.dto.request.RequestDeletarDepartamento;
 import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.ResponseDepartamento;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.repository.AdministrationRepository;
@@ -17,8 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static keysson.apis.administration.exception.enums.ErrorCode.ERROR_BUSCAR_DEPARTAMENTO;
-import static keysson.apis.administration.exception.enums.ErrorCode.ERROR_CADASTRO_DEPARTAMENTO;
+import static keysson.apis.administration.exception.enums.ErrorCode.*;
 
 @Service
 public class AdministrationService {
@@ -43,9 +44,9 @@ public class AdministrationService {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public ResponseEntity<List<EmpresaPendenteDTO>> pendingCompany(int conta) throws BusinessRuleException {
+    public ResponseEntity<List<PendingCompanyDTO>> pendingCompany(int conta) throws BusinessRuleException {
 
-        List<EmpresaPendenteDTO> empresasStatusPendente = administrationRepository.findPendingCompanies(conta);
+        List<PendingCompanyDTO> empresasStatusPendente = administrationRepository.findPendingCompanies(conta);
         return ResponseEntity.ok(empresasStatusPendente);
     };
 
@@ -104,6 +105,14 @@ public class AdministrationService {
             return administrationRepository.getDepartmentsByCompany(idEmpresa);
         } catch (Exception e) {
             throw new BusinessRuleException(ERROR_BUSCAR_DEPARTAMENTO);
+        }
+    }
+
+    public void deleteDepartment(RequestDeletarDepartamento request) throws BusinessRuleException {
+        try {
+            administrationRepository.deleteDepartmentById(request.getIdDepartamento());
+        } catch (Exception e) {
+            throw new BusinessRuleException(ERROR_DELETAR_DEPARTAMENTO);
         }
     }
 
