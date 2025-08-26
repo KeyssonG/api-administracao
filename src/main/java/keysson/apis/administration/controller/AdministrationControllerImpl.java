@@ -31,8 +31,8 @@ public class AdministrationControllerImpl implements AdministrationController{
     }
 
     @Override
-    public void putStatusAccount(int accountNumber, RequestAlteraStatusConta requestBody) throws BusinessRuleException {
-        administrationService.changeStatus(requestBody.getNewStatus(), accountNumber);
+    public void putStatusAccount(int numeroConta, RequestAlteraStatusConta requestBody) throws BusinessRuleException {
+        administrationService.changeStatus(requestBody.getNewStatus(), numeroConta);
     }
 
     @Override
