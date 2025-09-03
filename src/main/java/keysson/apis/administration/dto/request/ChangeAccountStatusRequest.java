@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestAlteraStatusConta {
+public class ChangeAccountStatusRequest {
 
     private int newStatus;
 

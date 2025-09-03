@@ -3,7 +3,7 @@ package keysson.apis.administration.dto.request;
 import lombok.Data;
 
 @Data
-public class RequestDeletarDepartamento {
+public class DeleteDepartmentRequest {
 
     int idDepartamento;
 }

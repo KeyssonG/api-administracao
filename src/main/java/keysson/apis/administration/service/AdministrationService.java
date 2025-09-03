@@ -4,12 +4,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
 import keysson.apis.administration.Utils.JwtUtil;
-import keysson.apis.administration.dto.AlteraStatusEvent;
-import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
-import keysson.apis.administration.dto.request.RequestDeletarDepartamento;
-import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.ChangeStatusEvent;
+import keysson.apis.administration.dto.request.CreateDepartmentRequest;
+import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
+import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
-import keysson.apis.administration.dto.response.ResponseDepartamento;
+import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.repository.AdministrationRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -55,7 +55,7 @@ public class AdministrationService {
         try {
             administrationRepository.newAccontStatus(newStatus, conta);
 
-            AlteraStatusEvent event = new AlteraStatusEvent(
+            ChangeStatusEvent event = new ChangeStatusEvent(
                     conta,
                     newStatus
             );
@@ -67,11 +67,11 @@ public class AdministrationService {
 
     }
 
-    public EmpresasStatusDTO StatusCompanies() {
+    public CompanyStatusDTO StatusCompanies() {
         return administrationRepository.findStatusCompany();
     }
 
-    public void registerDepartment(RequestCadastrarDepartamento requestBody) throws BusinessRuleException {
+    public void registerDepartment(CreateDepartmentRequest requestBody) throws BusinessRuleException {
 
         String token =(String)httpRequest.getAttribute("CleanJwt");
 
@@ -92,7 +92,7 @@ public class AdministrationService {
         }
     }
 
-    public List<ResponseDepartamento> searchAllDepartments() throws BusinessRuleException {
+    public List<DepartmentResponse> searchAllDepartments() throws BusinessRuleException {
         String token = (String) httpRequest.getAttribute("CleanJwt");
 
         Integer idEmpresa = jwtUtil.extractCompanyId(token);
@@ -108,7 +108,7 @@ public class AdministrationService {
         }
     }
 
-    public void deleteDepartment(RequestDeletarDepartamento request) throws BusinessRuleException {
+    public void deleteDepartment(DeleteDepartmentRequest request) throws BusinessRuleException {
         try {
             administrationRepository.deleteDepartmentById(request.getIdDepartamento());
         } catch (Exception e) {

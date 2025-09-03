@@ -6,6 +6,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class RequestCadastrarDepartamento {
+public class CreateDepartmentRequest {
     private String nomeDepartamento;
 }

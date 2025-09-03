@@ -1,12 +1,12 @@
 package keysson.apis.administration.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import keysson.apis.administration.dto.request.RequestAlteraStatusConta;
-import keysson.apis.administration.dto.request.RequestCadastrarDepartamento;
-import keysson.apis.administration.dto.request.RequestDeletarDepartamento;
-import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.request.ChangeAccountStatusRequest;
+import keysson.apis.administration.dto.request.CreateDepartmentRequest;
+import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
+import keysson.apis.administration.dto.response.CompanyStatusDTO;
+import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
-import keysson.apis.administration.dto.response.ResponseDepartamento;
 import keysson.apis.administration.exception.BusinessRuleException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public interface AdministrationController {
     )
     void putStatusAccount(
             @RequestParam(required = false, defaultValue = "0") int numeroConta,
-            @RequestBody RequestAlteraStatusConta requestBody
+            @RequestBody ChangeAccountStatusRequest requestBody
     ) throws BusinessRuleException;
 
 
@@ -41,7 +41,7 @@ public interface AdministrationController {
             summary = "Busca empresas com status pendente.",
             description = "Endpoint para verificar empresas pendentes"
     )
-    EmpresasStatusDTO getStatusCompanies(
+    CompanyStatusDTO getStatusCompanies(
     ) throws BusinessRuleException;
 
     @PostMapping("/departamento")
@@ -50,7 +50,7 @@ public interface AdministrationController {
             description = "Endpoint para criar um novo departamento"
     )
     void postDepartment(
-            @RequestBody RequestCadastrarDepartamento requestBody
+            @RequestBody CreateDepartmentRequest requestBody
     ) throws BusinessRuleException;
 
     @GetMapping("/departamento")
@@ -58,7 +58,7 @@ public interface AdministrationController {
             summary = "Busca todos os departamentos por empresa.",
             description = "Endpoint para buscar todos os departamentos"
     )
-    List<ResponseDepartamento> getAllDepartments(
+    List<DepartmentResponse> getAllDepartments(
     ) throws BusinessRuleException;
 
     @DeleteMapping("/departamento")
@@ -67,6 +67,6 @@ public interface AdministrationController {
             description = "Endpoint para deletar um departamento por ID"
     )
     void deleteDepartmentById(
-            @RequestBody RequestDeletarDepartamento requestBody
+            @RequestBody DeleteDepartmentRequest requestBody
     ) throws BusinessRuleException;
 }

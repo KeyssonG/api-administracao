@@ -1,10 +1,11 @@
 package keysson.apis.administration.repository;
 
-import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
-import keysson.apis.administration.dto.response.ResponseDepartamento;
-import keysson.apis.administration.mapper.DepartamentosRowMapper;
-import keysson.apis.administration.mapper.EmpresasStatusMapper;
+import keysson.apis.administration.dto.response.DepartmentResponse;
+
+import keysson.apis.administration.mapper.CompanyStatusMapper;
+import keysson.apis.administration.mapper.DepartmentsRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -21,7 +22,7 @@ public class AdministrationRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private DepartamentosRowMapper departamentosRowMapper;
+    private DepartmentsRowMapper departamentosRowMapper;
 
     private String PEDING_COMPANIES = """
             SELECT ID, CNPJ, NAME, STATUS, DESCRICAO_STATUS, NUMERO_CONTA FROM COMPANIES WHERE STATUS = 1
@@ -78,9 +79,9 @@ public class AdministrationRepository {
         jdbcTemplate.update(UPDATE_ACCOUNT_STATUS, status, conta);
     }
 
-    public EmpresasStatusDTO findStatusCompany() {
+    public CompanyStatusDTO findStatusCompany() {
         try {
-            return jdbcTemplate.queryForObject(FIND_STATUS_COMPANY, new EmpresasStatusMapper());
+            return jdbcTemplate.queryForObject(FIND_STATUS_COMPANY, new CompanyStatusMapper());
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar status das empresas", e);
         }
@@ -94,7 +95,7 @@ public class AdministrationRepository {
         }
     }
 
-    public List<ResponseDepartamento> getDepartmentsByCompany(int idEmpresa) {
+    public List<DepartmentResponse> getDepartmentsByCompany(int idEmpresa) {
         try {
             return jdbcTemplate.query(SQL_GET_DEPARTMENTS_BY_COMPANY, new Object[]{idEmpresa}, departamentosRowMapper);
         } catch (Exception e) {

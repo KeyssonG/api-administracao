@@ -1,6 +1,6 @@
 package keysson.apis.administration.mapper;
 
-import keysson.apis.administration.dto.response.EmpresasStatusDTO;
+import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -9,11 +9,11 @@ import java.sql.SQLException;
 
 
 @Component
-public class EmpresasStatusMapper implements RowMapper<EmpresasStatusDTO> {
+public class CompanyStatusMapper implements RowMapper<CompanyStatusDTO> {
 
     @Override
-    public EmpresasStatusDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
-        EmpresasStatusDTO  empresasStatusDTO = new EmpresasStatusDTO();
+    public CompanyStatusDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+        CompanyStatusDTO empresasStatusDTO = new CompanyStatusDTO();
         empresasStatusDTO.setPendente(rs.getInt("pendente"));
         empresasStatusDTO.setAtivo(rs.getInt("ativo"));
         empresasStatusDTO.setRejeitado(rs.getInt("rejeitado"));

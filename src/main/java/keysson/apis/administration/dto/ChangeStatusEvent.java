@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AlteraStatusEvent {
+public class ChangeStatusEvent {
 
     private int numeroConta;
     private int newStatus;
