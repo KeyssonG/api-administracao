@@ -49,7 +49,7 @@ pipeline {
                          docker push ${DOCKERHUB_IMAGE}:latest
                      """
                 }
-
+            }
         }
 
         stage('Atualizar deployment.yaml') {
