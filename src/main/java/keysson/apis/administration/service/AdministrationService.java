@@ -8,6 +8,7 @@ import keysson.apis.administration.dto.ChangeStatusEvent;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
+import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.exception.BusinessRuleException;
@@ -113,6 +114,14 @@ public class AdministrationService {
             administrationRepository.deleteDepartmentById(request.getIdDepartamento());
         } catch (Exception e) {
             throw new BusinessRuleException(ERROR_DELETAR_DEPARTAMENTO);
+        }
+    }
+
+    public List<ModuloResponseDTO> listAllModulos() throws BusinessRuleException {
+        try {
+            return administrationRepository.getAllModulos();
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar módulos");
         }
     }
 

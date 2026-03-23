@@ -1,6 +1,7 @@
 package keysson.apis.administration.repository;
 
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
+import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 
@@ -50,6 +51,10 @@ public class AdministrationRepository {
 
     // SQL para deletar departamento por id
     private static final String SQL_DELETE_DEPARTMENT_BY_ID = "DELETE FROM DEPARTAMENTOS WHERE ID = ?";
+
+    private String SQL_GET_MODULOS = """
+            SELECT ID, NOME FROM MODULOS
+            """;
 
 
     public List<PendingCompanyDTO> findPendingCompanies(int numeroConta) {
@@ -108,6 +113,20 @@ public class AdministrationRepository {
             jdbcTemplate.update(SQL_DELETE_DEPARTMENT_BY_ID, idDepartamento);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao deletar departamento: " + e.getMessage(), e);
+        }
+    }
+
+    public List<ModuloResponseDTO> getAllModulos() {
+        try {
+            return jdbcTemplate.query(
+                    SQL_GET_MODULOS,
+                    (rs, rowNum) -> ModuloResponseDTO.builder()
+                            .id(rs.getInt("ID"))
+                            .nome(rs.getString("NOME"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar módulos: " + e.getMessage(), e);
         }
     }
 

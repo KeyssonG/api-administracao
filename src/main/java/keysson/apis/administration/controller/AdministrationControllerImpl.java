@@ -5,6 +5,7 @@ import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
+import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.service.AdministrationService;
@@ -54,6 +55,11 @@ public class AdministrationControllerImpl implements AdministrationController{
     @Override
     public void deleteDepartmentById(@RequestBody DeleteDepartmentRequest requestBody) throws BusinessRuleException {
         administrationService.deleteDepartment(requestBody);
+    }
+
+    @Override
+    public List<ModuloResponseDTO> getModulos() throws BusinessRuleException {
+        return administrationService.listAllModulos();
     }
 
 

@@ -6,6 +6,7 @@ import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
+import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import org.springframework.http.ResponseEntity;
@@ -68,5 +69,13 @@ public interface AdministrationController {
     )
     void deleteDepartmentById(
             @RequestBody DeleteDepartmentRequest requestBody
+    ) throws BusinessRuleException;
+
+    @GetMapping("/modulos")
+    @Operation(
+            summary = "Busca todos os módulos disponíveis.",
+            description = "Endpoint para consultar módulos de serviço"
+    )
+    List<ModuloResponseDTO> getModulos(
     ) throws BusinessRuleException;
 }
