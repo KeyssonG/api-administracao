@@ -7,6 +7,7 @@ import keysson.apis.administration.Utils.JwtUtil;
 import keysson.apis.administration.dto.ChangeStatusEvent;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
+import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
@@ -117,12 +118,16 @@ public class AdministrationService {
         }
     }
 
-    public List<ModuloResponseDTO> listAllModulos() throws BusinessRuleException {
+    public List<ModuloResponseDTO> listAllModulos(Integer id) throws BusinessRuleException {
         try {
-            return administrationRepository.getAllModulos();
+            return administrationRepository.getAllModulos(id);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar módulos");
         }
+    }
+
+    public List<CompanyResponseDTO> getCompaniesByStatus(int statusId) {
+        return administrationRepository.findCompaniesByStatus(statusId);
     }
 
 }

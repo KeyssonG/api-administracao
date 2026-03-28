@@ -1,5 +1,6 @@
 package keysson.apis.administration.repository;
 
+import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
@@ -54,6 +55,10 @@ public class AdministrationRepository {
 
     private String SQL_GET_MODULOS = """
             SELECT ID, NOME FROM MODULOS
+            """;
+
+    private String SQL_GET_COMPANIES_BY_STATUS = """
+            SELECT ID, NAME FROM COMPANIES WHERE STATUS = ?
             """;
 
 
@@ -116,10 +121,19 @@ public class AdministrationRepository {
         }
     }
 
-    public List<ModuloResponseDTO> getAllModulos() {
+    public List<ModuloResponseDTO> getAllModulos(Integer id) {
         try {
+            StringBuilder sql = new StringBuilder(SQL_GET_MODULOS);
+            List<Object> params = new ArrayList<>();
+
+            if (id != null && id != 0) {
+                sql.append(" WHERE ID = ?");
+                params.add(id);
+            }
+
             return jdbcTemplate.query(
-                    SQL_GET_MODULOS,
+                    sql.toString(),
+                    params.toArray(),
                     (rs, rowNum) -> ModuloResponseDTO.builder()
                             .id(rs.getInt("ID"))
                             .nome(rs.getString("NOME"))
@@ -127,6 +141,21 @@ public class AdministrationRepository {
             );
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar módulos: " + e.getMessage(), e);
+        }
+    }
+
+    public List<CompanyResponseDTO> findCompaniesByStatus(int statusId) {
+        try {
+            return jdbcTemplate.query(
+                    SQL_GET_COMPANIES_BY_STATUS,
+                    new Object[]{statusId},
+                    (rs, rowNum) -> CompanyResponseDTO.builder()
+                            .id(rs.getInt("ID"))
+                            .name(rs.getString("NAME"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar empresas por status: " + e.getMessage(), e);
         }
     }
 

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import keysson.apis.administration.dto.request.ChangeAccountStatusRequest;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
+import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.dto.response.ModuloResponseDTO;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/administracao")
 public interface AdministrationController {
 
-    @GetMapping("/empresa/pendente/")
+    @GetMapping("/empresa/pendente")
     @Operation(
             summary = "Busca empresas com status pendente.",
             description = "Endpoint para verificar empresas pendentes"
@@ -43,6 +44,15 @@ public interface AdministrationController {
             description = "Endpoint para verificar empresas pendentes"
     )
     CompanyStatusDTO getStatusCompanies(
+    ) throws BusinessRuleException;
+
+    @GetMapping("/empresa/status/{statusId}")
+    @Operation(
+            summary = "Busca empresas por status.",
+            description = "Endpoint para buscar ID e Nome das empresas filtradas por status"
+    )
+    List<CompanyResponseDTO> getCompaniesByStatus(
+            @PathVariable int statusId
     ) throws BusinessRuleException;
 
     @PostMapping("/departamento")
@@ -77,5 +87,6 @@ public interface AdministrationController {
             description = "Endpoint para consultar módulos de serviço"
     )
     List<ModuloResponseDTO> getModulos(
+            @RequestParam(required = false) Integer id
     ) throws BusinessRuleException;
 }

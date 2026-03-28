@@ -3,6 +3,7 @@ package keysson.apis.administration.controller;
 import keysson.apis.administration.dto.request.ChangeAccountStatusRequest;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
+import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.dto.response.ModuloResponseDTO;
@@ -12,6 +13,7 @@ import keysson.apis.administration.service.AdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -58,8 +60,13 @@ public class AdministrationControllerImpl implements AdministrationController{
     }
 
     @Override
-    public List<ModuloResponseDTO> getModulos() throws BusinessRuleException {
-        return administrationService.listAllModulos();
+    public List<ModuloResponseDTO> getModulos(Integer id) throws BusinessRuleException {
+        return administrationService.listAllModulos(id);
+    }
+
+    @Override
+    public List<CompanyResponseDTO> getCompaniesByStatus(@PathVariable int statusId) throws BusinessRuleException {
+        return administrationService.getCompaniesByStatus(statusId);
     }
 
 
