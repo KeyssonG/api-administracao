@@ -3,6 +3,8 @@ package keysson.apis.administration.controller;
 import keysson.apis.administration.dto.request.ChangeAccountStatusRequest;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
+import keysson.apis.administration.dto.request.LinkCompanyModuloRequest;
+import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
 import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
@@ -67,6 +69,16 @@ public class AdministrationControllerImpl implements AdministrationController{
     @Override
     public List<CompanyResponseDTO> getCompaniesByStatus(@PathVariable int statusId) throws BusinessRuleException {
         return administrationService.getCompaniesByStatus(statusId);
+    }
+
+    @Override
+    public void postLinkCompanyModulo(@RequestBody LinkCompanyModuloRequest requestBody) throws BusinessRuleException {
+        administrationService.linkCompanyModulo(requestBody);
+    }
+
+    @Override
+    public List<CompanyModuloResponseDTO> getCompanyModulos() throws BusinessRuleException {
+        return administrationService.getCompanyModulos();
     }
 
 
