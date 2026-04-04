@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class EmpresaPendenteDTO {
+public class PendingCompanyDTO {
 
     private int id;
     private String cnpj;
     private int status;
-    private String descricao;
-    private String nome;
-    private int numeroConta;
+    private String description;
+    private String name;
+    private int accountNumber;
 }

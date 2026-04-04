@@ -14,7 +14,12 @@ spec:
     spec:
       containers:
         - name: administracao-container
-          image: keyssong/administracao:latest  # 🔹 Buscar no Docker Hub
-          imagePullPolicy: Always           # 🔹 Sempre buscar a versão mais recente
+          image: keyssong/administracao:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8086
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secret

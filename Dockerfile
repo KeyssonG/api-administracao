@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=builder /app/administracao.jar /app/administracao.jar
 
 # Expõe a porta da aplicação
-EXPOSE 8083
+EXPOSE 8086
 
 # Comando de inicialização
 CMD ["java", "-jar", "/app/administracao.jar"]
