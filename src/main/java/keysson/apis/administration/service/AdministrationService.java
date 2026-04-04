@@ -7,7 +7,11 @@ import keysson.apis.administration.Utils.JwtUtil;
 import keysson.apis.administration.dto.ChangeStatusEvent;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
+import keysson.apis.administration.dto.request.LinkCompanyModuloRequest;
+import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
+import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
+import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.exception.BusinessRuleException;
@@ -114,6 +118,31 @@ public class AdministrationService {
         } catch (Exception e) {
             throw new BusinessRuleException(ERROR_DELETAR_DEPARTAMENTO);
         }
+    }
+
+    public List<ModuloResponseDTO> listAllModulos(Integer id) throws BusinessRuleException {
+        try {
+            return administrationRepository.getAllModulos(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar módulos");
+        }
+    }
+
+    public List<CompanyResponseDTO> getCompaniesByStatus(int statusId) {
+        return administrationRepository.findCompaniesByStatus(statusId);
+    }
+
+    public void linkCompanyModulo(LinkCompanyModuloRequest requestBody) throws BusinessRuleException {
+        try {
+            System.out.println("VINCULANDO EMPRESA: " + requestBody.getCompanyId() + " AO MODULO: " + requestBody.getModuloId() + " COM STATUS: " + requestBody.getStatus());
+            administrationRepository.linkCompanyModulo(requestBody.getCompanyId(), requestBody.getModuloId(), requestBody.getStatus());
+        } catch (Exception e) {
+            throw new BusinessRuleException(ERROR_VINCULAR_EMPRESA_MODULO);
+        }
+    }
+
+    public List<CompanyModuloResponseDTO> getCompanyModulos() {
+        return administrationRepository.getCompanyModulos();
     }
 
 }

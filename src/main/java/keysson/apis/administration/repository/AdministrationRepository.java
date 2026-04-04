@@ -1,6 +1,9 @@
 package keysson.apis.administration.repository;
 
+import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
+import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
+import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 
@@ -50,6 +53,26 @@ public class AdministrationRepository {
 
     // SQL para deletar departamento por id
     private static final String SQL_DELETE_DEPARTMENT_BY_ID = "DELETE FROM DEPARTAMENTOS WHERE ID = ?";
+
+    private String SQL_GET_MODULOS = """
+            SELECT ID, NOME FROM MODULOS
+            """;
+
+    private String SQL_GET_COMPANIES_BY_STATUS = """
+            SELECT ID, NAME FROM COMPANIES WHERE STATUS = ?
+            """;
+
+    private String SQL_LINK_COMPANY_MODULO = """
+            INSERT INTO public.empresa_modulos (company_id, modulo_id, status) VALUES (?, ?, ?)
+            """;
+
+    private String SQL_GET_COMPANY_MODULOS = """
+            select em.id, em.company_id, c.name, em.modulo_id, m.nome, em.status, ts.descricao 
+            from empresa_modulos em
+            join companies c on em.company_id = c.id 
+            join modulos m on m.id = em.modulo_id 
+            join tipos_status ts on ts.status = em.status
+            """;
 
 
     public List<PendingCompanyDTO> findPendingCompanies(int numeroConta) {
@@ -108,6 +131,71 @@ public class AdministrationRepository {
             jdbcTemplate.update(SQL_DELETE_DEPARTMENT_BY_ID, idDepartamento);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao deletar departamento: " + e.getMessage(), e);
+        }
+    }
+
+    public List<ModuloResponseDTO> getAllModulos(Integer id) {
+        try {
+            StringBuilder sql = new StringBuilder(SQL_GET_MODULOS);
+            List<Object> params = new ArrayList<>();
+
+            if (id != null && id != 0) {
+                sql.append(" WHERE ID = ?");
+                params.add(id);
+            }
+
+            return jdbcTemplate.query(
+                    sql.toString(),
+                    params.toArray(),
+                    (rs, rowNum) -> ModuloResponseDTO.builder()
+                            .id(rs.getInt("ID"))
+                            .nome(rs.getString("NOME"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar módulos: " + e.getMessage(), e);
+        }
+    }
+
+    public List<CompanyResponseDTO> findCompaniesByStatus(int statusId) {
+        try {
+            return jdbcTemplate.query(
+                    SQL_GET_COMPANIES_BY_STATUS,
+                    new Object[]{statusId},
+                    (rs, rowNum) -> CompanyResponseDTO.builder()
+                            .id(rs.getInt("ID"))
+                            .name(rs.getString("NAME"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar empresas por status: " + e.getMessage(), e);
+        }
+    }
+
+    public void linkCompanyModulo(int companyId, int moduloId, int status) {
+        try {
+            jdbcTemplate.update(SQL_LINK_COMPANY_MODULO, companyId, moduloId, status);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao vincular empresa ao módulo: " + e.getMessage(), e);
+        }
+    }
+
+    public List<CompanyModuloResponseDTO> getCompanyModulos() {
+        try {
+            return jdbcTemplate.query(
+                    SQL_GET_COMPANY_MODULOS,
+                    (rs, rowNum) -> CompanyModuloResponseDTO.builder()
+                            .id(rs.getInt("id"))
+                            .companyId(rs.getInt("company_id"))
+                            .companyName(rs.getString("name"))
+                            .moduloId(rs.getInt("modulo_id"))
+                            .moduloName(rs.getString("nome"))
+                            .status(rs.getInt("status"))
+                            .statusDescription(rs.getString("descricao"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar vínculos de empresas e módulos: " + e.getMessage(), e);
         }
     }
 
