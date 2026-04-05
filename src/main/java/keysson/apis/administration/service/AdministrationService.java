@@ -8,6 +8,7 @@ import keysson.apis.administration.dto.ChangeStatusEvent;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
 import keysson.apis.administration.dto.request.LinkCompanyModuloRequest;
+import keysson.apis.administration.dto.request.LinkUserModuloRequest;
 import keysson.apis.administration.dto.response.CompanyModuloDTO;
 import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
 import keysson.apis.administration.dto.response.CompanyResponseDTO;
@@ -155,6 +156,21 @@ public class AdministrationService {
         }
 
         return administrationRepository.getModulosByCompanyId(idEmpresa);
+    }
+
+    public void linkUserModulo(LinkUserModuloRequest requestBody) throws BusinessRuleException {
+        String token = (String) httpRequest.getAttribute("CleanJwt");
+        Integer idEmpresa = jwtUtil.extractCompanyId(token);
+
+        if (idEmpresa == null) {
+            throw new IllegalArgumentException("ID da empresa não encontrado no token.");
+        }
+
+        try {
+            administrationRepository.linkUserModulo(requestBody.getUserId(), idEmpresa, requestBody.getModuloId());
+        } catch (Exception e) {
+            throw new BusinessRuleException(ERROR_VINCULAR_USUARIO_MODULO);
+        }
     }
 
 }
