@@ -4,6 +4,7 @@ import keysson.apis.administration.dto.request.ChangeAccountStatusRequest;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
 import keysson.apis.administration.dto.request.LinkCompanyModuloRequest;
+import keysson.apis.administration.dto.response.CompanyModuloDTO;
 import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
 import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
@@ -79,6 +80,11 @@ public class AdministrationControllerImpl implements AdministrationController{
     @Override
     public List<CompanyModuloResponseDTO> getCompanyModulos() throws BusinessRuleException {
         return administrationService.getCompanyModulos();
+    }
+
+    @Override
+    public List<CompanyModuloDTO> getModulosByCompany() throws BusinessRuleException {
+        return administrationService.listModulosByCompany();
     }
 
 
