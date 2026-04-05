@@ -1,5 +1,6 @@
 package keysson.apis.administration.repository;
 
+import keysson.apis.administration.dto.response.CompanyModuloDTO;
 import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
 import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
@@ -72,6 +73,15 @@ public class AdministrationRepository {
             join companies c on em.company_id = c.id 
             join modulos m on m.id = em.modulo_id 
             join tipos_status ts on ts.status = em.status
+            """;
+
+    private String SQL_GET_MODULOS_BY_COMPANY_ID = """
+            select es.modulo_id, ms.nome, es.status, ts.descricao  from empresa_modulos es
+            join modulos ms
+            on ms.id = es.modulo_id
+            join tipos_status ts 
+            on ts.status = es.status
+            where es.company_id = ?
             """;
 
 
@@ -196,6 +206,23 @@ public class AdministrationRepository {
             );
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar vínculos de empresas e módulos: " + e.getMessage(), e);
+        }
+    }
+
+    public List<CompanyModuloDTO> getModulosByCompanyId(int companyId) {
+        try {
+            return jdbcTemplate.query(
+                    SQL_GET_MODULOS_BY_COMPANY_ID,
+                    new Object[]{companyId},
+                    (rs, rowNum) -> CompanyModuloDTO.builder()
+                            .moduloId(rs.getInt("modulo_id"))
+                            .moduloName(rs.getString("nome"))
+                            .status(rs.getInt("status"))
+                            .statusDescription(rs.getString("descricao"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar módulos da empresa: " + e.getMessage(), e);
         }
     }
 
