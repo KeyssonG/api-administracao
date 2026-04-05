@@ -67,6 +67,10 @@ public class AdministrationRepository {
             INSERT INTO public.empresa_modulos (company_id, modulo_id, status) VALUES (?, ?, ?)
             """;
 
+    private String SQL_LINK_USER_MODULO = """
+            INSERT INTO public.permissoes_modulo (user_id, company_id, modulo_id) VALUES (?, ?, ?)
+            """;
+
     private String SQL_GET_COMPANY_MODULOS = """
             select em.id, em.company_id, c.name, em.modulo_id, m.nome, em.status, ts.descricao 
             from empresa_modulos em
@@ -190,6 +194,14 @@ public class AdministrationRepository {
         }
     }
 
+    public void linkUserModulo(int userId, int companyId, int moduloId) {
+        try {
+            jdbcTemplate.update(SQL_LINK_USER_MODULO, userId, companyId, moduloId);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao vincular usuário ao módulo: " + e.getMessage(), e);
+        }
+    }
+
     public List<CompanyModuloResponseDTO> getCompanyModulos() {
         try {
             return jdbcTemplate.query(
@@ -225,6 +237,4 @@ public class AdministrationRepository {
             throw new RuntimeException("Erro ao buscar módulos da empresa: " + e.getMessage(), e);
         }
     }
-
-
 }

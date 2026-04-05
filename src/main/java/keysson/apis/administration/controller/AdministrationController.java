@@ -5,6 +5,7 @@ import keysson.apis.administration.dto.request.ChangeAccountStatusRequest;
 import keysson.apis.administration.dto.request.CreateDepartmentRequest;
 import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
 import keysson.apis.administration.dto.request.LinkCompanyModuloRequest;
+import keysson.apis.administration.dto.request.LinkUserModuloRequest;
 import keysson.apis.administration.dto.response.CompanyModuloDTO;
 import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
 import keysson.apis.administration.dto.response.CompanyResponseDTO;
@@ -116,5 +117,14 @@ public interface AdministrationController {
             description = "Endpoint para buscar os módulos que a empresa autenticada possui"
     )
     List<CompanyModuloDTO> getModulosByCompany(
+    ) throws BusinessRuleException;
+
+    @PostMapping("/usuario/modulo")
+    @Operation(
+            summary = "Vincula um usuário a um módulo.",
+            description = "Endpoint para vincular um usuário a um módulo de serviço"
+    )
+    void postLinkUserModulo(
+            @RequestBody LinkUserModuloRequest requestBody
     ) throws BusinessRuleException;
 }
