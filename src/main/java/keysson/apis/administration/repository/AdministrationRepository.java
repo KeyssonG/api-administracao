@@ -1,5 +1,6 @@
 package keysson.apis.administration.repository;
 
+import keysson.apis.administration.dto.response.CompanyModuloDTO;
 import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
 import keysson.apis.administration.dto.response.CompanyResponseDTO;
 import keysson.apis.administration.dto.response.CompanyStatusDTO;
@@ -66,12 +67,25 @@ public class AdministrationRepository {
             INSERT INTO public.empresa_modulos (company_id, modulo_id, status) VALUES (?, ?, ?)
             """;
 
+    private String SQL_LINK_USER_MODULO = """
+            INSERT INTO public.permissoes_modulo (user_id, company_id, modulo_id) VALUES (?, ?, ?)
+            """;
+
     private String SQL_GET_COMPANY_MODULOS = """
             select em.id, em.company_id, c.name, em.modulo_id, m.nome, em.status, ts.descricao 
             from empresa_modulos em
             join companies c on em.company_id = c.id 
             join modulos m on m.id = em.modulo_id 
             join tipos_status ts on ts.status = em.status
+            """;
+
+    private String SQL_GET_MODULOS_BY_COMPANY_ID = """
+            select es.modulo_id, ms.nome, es.status, ts.descricao  from empresa_modulos es
+            join modulos ms
+            on ms.id = es.modulo_id
+            join tipos_status ts 
+            on ts.status = es.status
+            where es.company_id = ?
             """;
 
 
@@ -180,6 +194,14 @@ public class AdministrationRepository {
         }
     }
 
+    public void linkUserModulo(int userId, int companyId, int moduloId) {
+        try {
+            jdbcTemplate.update(SQL_LINK_USER_MODULO, userId, companyId, moduloId);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao vincular usuário ao módulo: " + e.getMessage(), e);
+        }
+    }
+
     public List<CompanyModuloResponseDTO> getCompanyModulos() {
         try {
             return jdbcTemplate.query(
@@ -199,5 +221,20 @@ public class AdministrationRepository {
         }
     }
 
-
+    public List<CompanyModuloDTO> getModulosByCompanyId(int companyId) {
+        try {
+            return jdbcTemplate.query(
+                    SQL_GET_MODULOS_BY_COMPANY_ID,
+                    new Object[]{companyId},
+                    (rs, rowNum) -> CompanyModuloDTO.builder()
+                            .moduloId(rs.getInt("modulo_id"))
+                            .moduloName(rs.getString("nome"))
+                            .status(rs.getInt("status"))
+                            .statusDescription(rs.getString("descricao"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar módulos da empresa: " + e.getMessage(), e);
+        }
+    }
 }
