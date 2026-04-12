@@ -7,6 +7,7 @@ import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
+import keysson.apis.administration.dto.response.UserModuloResponseDTO;
 
 import keysson.apis.administration.mapper.CompanyStatusMapper;
 import keysson.apis.administration.mapper.DepartmentsRowMapper;
@@ -86,6 +87,14 @@ public class AdministrationRepository {
             join tipos_status ts 
             on ts.status = es.status
             where es.company_id = ?
+            """;
+
+    private String SQL_GET_USER_MODULOS = """
+            select pm.user_id, f.nome as user_nome, f.departamento, pm.modulo_id, m.nome as modulo_nome 
+            from permissoes_modulo pm
+            join funcionarios f on pm.user_id = f.id 
+            join modulos m on pm.modulo_id = m.id
+            where pm.company_id = ?
             """;
 
 
@@ -235,6 +244,24 @@ public class AdministrationRepository {
             );
         } catch (Exception e) {
             throw new RuntimeException("Erro ao buscar módulos da empresa: " + e.getMessage(), e);
+        }
+    }
+
+    public List<UserModuloResponseDTO> getUserModulos(int companyId) {
+        try {
+            return jdbcTemplate.query(
+                    SQL_GET_USER_MODULOS,
+                    new Object[]{companyId},
+                    (rs, rowNum) -> UserModuloResponseDTO.builder()
+                            .userId(rs.getInt("user_id"))
+                            .userName(rs.getString("user_nome"))
+                            .department(rs.getString("departamento"))
+                            .moduloId(rs.getInt("modulo_id"))
+                            .moduloName(rs.getString("modulo_nome"))
+                            .build()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao buscar vínculos de usuários e módulos: " + e.getMessage(), e);
         }
     }
 }
