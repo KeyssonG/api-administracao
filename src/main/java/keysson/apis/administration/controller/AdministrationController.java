@@ -13,6 +13,7 @@ import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
+import keysson.apis.administration.dto.response.UserModuloResponseDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -126,5 +127,13 @@ public interface AdministrationController {
     )
     void postLinkUserModulo(
             @RequestBody LinkUserModuloRequest requestBody
+    ) throws BusinessRuleException;
+
+    @GetMapping("/usuario/modulo")
+    @Operation(
+            summary = "Busca todos os vínculos de usuários e módulos.",
+            description = "Endpoint para consultar usuários vinculados a módulos"
+    )
+    List<UserModuloResponseDTO> getUserModulos(
     ) throws BusinessRuleException;
 }

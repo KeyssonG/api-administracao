@@ -12,8 +12,10 @@ import keysson.apis.administration.dto.response.CompanyStatusDTO;
 import keysson.apis.administration.dto.response.DepartmentResponse;
 import keysson.apis.administration.dto.response.ModuloResponseDTO;
 import keysson.apis.administration.dto.response.PendingCompanyDTO;
+import keysson.apis.administration.dto.response.UserModuloResponseDTO;
 import keysson.apis.administration.exception.BusinessRuleException;
 import keysson.apis.administration.service.AdministrationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class AdministrationControllerImpl implements AdministrationController{
 
     private final AdministrationService administrationService;
@@ -35,62 +38,81 @@ public class AdministrationControllerImpl implements AdministrationController{
 
     @Override
     public ResponseEntity<List<PendingCompanyDTO>> getPendingCompany(int accountNumber) throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar empresas pendentes para a conta: {}", accountNumber);
         return administrationService.pendingCompany(accountNumber);
     }
 
     @Override
     public void putStatusAccount(int numeroConta, ChangeAccountStatusRequest requestBody) throws BusinessRuleException {
+        log.info("Recebendo requisição para alterar status da conta: {} para o novo status: {}", numeroConta, requestBody.getNewStatus());
         administrationService.changeStatus(requestBody.getNewStatus(), numeroConta);
     }
 
     @Override
     public CompanyStatusDTO getStatusCompanies() throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar o status geral das empresas.");
         return administrationService.StatusCompanies();
     }
 
     @Override
     public void postDepartment(@RequestBody CreateDepartmentRequest requestBody) throws BusinessRuleException {
+        log.info("Recebendo requisição para cadastrar novo departamento: {}", requestBody.getNomeDepartamento());
         administrationService.registerDepartment(requestBody);
     }
 
     @Override
     public List<DepartmentResponse> getAllDepartments() throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar todos os departamentos.");
         return administrationService.searchAllDepartments();
     }
 
     @Override
     public void deleteDepartmentById(@RequestBody DeleteDepartmentRequest requestBody) throws BusinessRuleException {
+        log.info("Recebendo requisição para deletar departamento por ID: {}", requestBody.getIdDepartamento());
         administrationService.deleteDepartment(requestBody);
     }
 
     @Override
     public List<ModuloResponseDTO> getModulos(Integer id) throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar módulos. ID opcional: {}", id);
         return administrationService.listAllModulos(id);
     }
 
     @Override
     public List<CompanyResponseDTO> getCompaniesByStatus(@PathVariable int statusId) throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar empresas pelo status: {}", statusId);
         return administrationService.getCompaniesByStatus(statusId);
     }
 
     @Override
     public void postLinkCompanyModulo(@RequestBody LinkCompanyModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Recebendo requisição para vincular empresa: {} ao módulo: {} com status: {}", 
+                requestBody.getCompanyId(), requestBody.getModuloId(), requestBody.getStatus());
         administrationService.linkCompanyModulo(requestBody);
     }
 
     @Override
     public List<CompanyModuloResponseDTO> getCompanyModulos() throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar todos os vínculos de empresas e módulos.");
         return administrationService.getCompanyModulos();
     }
 
     @Override
     public List<CompanyModuloDTO> getModulosByCompany() throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar módulos da empresa autenticada.");
         return administrationService.listModulosByCompany();
     }
 
     @Override
     public void postLinkUserModulo(@RequestBody LinkUserModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Recebendo requisição para vincular usuário: {} ao módulo: {}", requestBody.getUserId(), requestBody.getModuloId());
         administrationService.linkUserModulo(requestBody);
+    }
+
+    @Override
+    public List<UserModuloResponseDTO> getUserModulos() throws BusinessRuleException {
+        log.info("Recebendo requisição para buscar vínculos de usuários e módulos.");
+        return administrationService.getUserModulos();
     }
 
 
