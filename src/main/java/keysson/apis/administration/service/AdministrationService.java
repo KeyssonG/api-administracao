@@ -5,10 +5,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpServletRequest;
 import keysson.apis.administration.Utils.JwtUtil;
 import keysson.apis.administration.dto.ChangeStatusEvent;
-import keysson.apis.administration.dto.request.CreateDepartmentRequest;
-import keysson.apis.administration.dto.request.DeleteDepartmentRequest;
-import keysson.apis.administration.dto.request.LinkCompanyModuloRequest;
-import keysson.apis.administration.dto.request.LinkUserModuloRequest;
+import keysson.apis.administration.dto.request.*;
 import keysson.apis.administration.dto.response.CompanyModuloDTO;
 import keysson.apis.administration.dto.response.CompanyModuloResponseDTO;
 import keysson.apis.administration.dto.response.CompanyResponseDTO;
@@ -214,6 +211,43 @@ public class AdministrationService {
         } catch (Exception e) {
             log.error("Erro ao buscar vínculos de usuários e módulos para a empresa {}: {}", idEmpresa, e.getMessage());
             throw new BusinessRuleException(ERROR_BUSCAR_DEPARTAMENTO);
+        }
+    }
+
+    public List<CompanyModuloDTO> listModulosByCompanyPortal(Integer companyId) {
+        log.info("Portal: Listando módulos para a empresa ID: {}", companyId);
+        return administrationRepository.getModulosByCompanyId(companyId);
+    }
+
+    public List<UserModuloResponseDTO> getUserModulosPortal(Integer companyId) throws BusinessRuleException {
+        log.info("Portal: Buscando todos os vínculos de usuários e módulos para a empresa ID: {}", companyId);
+        try {
+            return administrationRepository.getUserModulos(companyId);
+        } catch (Exception e) {
+            log.error("Portal: Erro ao buscar vínculos para a empresa {}: {}", companyId, e.getMessage());
+            throw new BusinessRuleException(ERROR_BUSCAR_DEPARTAMENTO);
+        }
+    }
+
+    public List<DepartmentResponse> searchAllDepartmentsPortal(Integer companyId) throws BusinessRuleException {
+        log.info("Portal: Buscando todos os departamentos da empresa ID: {}", companyId);
+        try {
+            return administrationRepository.getDepartmentsByCompany(companyId);
+        } catch (Exception e) {
+            log.error("Portal: Erro ao buscar departamentos da empresa {}: {}", companyId, e.getMessage());
+            throw new BusinessRuleException(ERROR_BUSCAR_DEPARTAMENTO);
+        }
+    }
+
+    public void linkUserModuloPortal(PortalLinkUserModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Portal: Vinculando usuário: {} ao módulo: {} na empresa ID: {}", 
+                requestBody.getUserId(), requestBody.getModuloId(), requestBody.getCompanyId());
+        try {
+            administrationRepository.linkUserModulo(requestBody.getUserId(), requestBody.getCompanyId(), requestBody.getModuloId());
+        } catch (Exception e) {
+            log.error("Portal: Erro ao vincular usuário {} na empresa {}: {}", 
+                    requestBody.getUserId(), requestBody.getCompanyId(), e.getMessage());
+            throw new BusinessRuleException(ERROR_VINCULAR_USUARIO_MODULO);
         }
     }
 

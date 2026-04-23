@@ -115,5 +115,30 @@ public class AdministrationControllerImpl implements AdministrationController{
         return administrationService.getUserModulos();
     }
 
+    @Override
+    public List<CompanyModuloDTO> getModulosByCompanyPortal(Integer companyId) throws BusinessRuleException {
+        log.info("Portal: Recebendo requisição para buscar módulos da empresa: {}", companyId);
+        return administrationService.listModulosByCompanyPortal(companyId);
+    }
+
+    @Override
+    public List<UserModuloResponseDTO> getUserModulosPortal(Integer companyId) throws BusinessRuleException {
+        log.info("Portal: Recebendo requisição para buscar vínculos de usuários da empresa: {}", companyId);
+        return administrationService.getUserModulosPortal(companyId);
+    }
+
+    @Override
+    public List<DepartmentResponse> getAllDepartmentsPortal(Integer companyId) throws BusinessRuleException {
+        log.info("Portal: Recebendo requisição para buscar departamentos da empresa: {}", companyId);
+        return administrationService.searchAllDepartmentsPortal(companyId);
+    }
+
+    @Override
+    public void postLinkUserModuloPortal(PortalLinkUserModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Portal: Recebendo requisição para vincular usuário: {} ao módulo: {} na empresa: {}", 
+                requestBody.getUserId(), requestBody.getModuloId(), requestBody.getCompanyId());
+        administrationService.linkUserModuloPortal(requestBody);
+    }
+
 
 }
