@@ -136,4 +136,21 @@ public interface AdministrationController {
     )
     List<UserModuloResponseDTO> getUserModulos(
     ) throws BusinessRuleException;
+
+    // Novos endpoints para o Portal de Administração
+    @GetMapping("/portal/empresa/modulos")
+    @Operation(summary = "Busca módulos por empresa (Portal).")
+    List<CompanyModuloDTO> getModulosByCompanyPortal(@RequestParam Integer companyId) throws BusinessRuleException;
+
+    @GetMapping("/portal/usuario/modulo")
+    @Operation(summary = "Busca vínculos de usuários por empresa (Portal).")
+    List<UserModuloResponseDTO> getUserModulosPortal(@RequestParam Integer companyId) throws BusinessRuleException;
+
+    @GetMapping("/portal/departamento")
+    @Operation(summary = "Busca departamentos por empresa (Portal).")
+    List<DepartmentResponse> getAllDepartmentsPortal(@RequestParam Integer companyId) throws BusinessRuleException;
+
+    @PostMapping("/portal/usuario/modulo")
+    @Operation(summary = "Vincula usuário a módulo informando a empresa (Portal).")
+    void postLinkUserModuloPortal(@RequestBody PortalLinkUserModuloRequest requestBody) throws BusinessRuleException;
 }
