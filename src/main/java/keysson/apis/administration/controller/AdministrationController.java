@@ -108,6 +108,15 @@ public interface AdministrationController {
     List<CompanyModuloResponseDTO> getCompanyModulos(
     ) throws BusinessRuleException;
 
+    @DeleteMapping("/empresa/modulo")
+    @Operation(
+            summary = "Remove o vínculo de uma empresa com um módulo.",
+            description = "Endpoint para desvincular uma empresa de um módulo de serviço. Remove também todos os usuários da empresa vinculados a este módulo."
+    )
+    void deleteLinkCompanyModulo(
+            @RequestBody UnlinkCompanyModuloRequest requestBody
+    ) throws BusinessRuleException;
+
     @GetMapping("/empresa/modulos")
     @Operation(
             summary = "Busca módulos por empresa.",
@@ -123,6 +132,15 @@ public interface AdministrationController {
     )
     void postLinkUserModulo(
             @RequestBody LinkUserModuloRequest requestBody
+    ) throws BusinessRuleException;
+
+    @DeleteMapping("/usuario/modulo")
+    @Operation(
+            summary = "Remove o vínculo de um usuário com um módulo.",
+            description = "Endpoint para desvincular um usuário de um módulo de serviço"
+    )
+    void deleteLinkUserModulo(
+            @RequestBody UnlinkUserModuloRequest requestBody
     ) throws BusinessRuleException;
 
     @GetMapping("/usuario/modulo")

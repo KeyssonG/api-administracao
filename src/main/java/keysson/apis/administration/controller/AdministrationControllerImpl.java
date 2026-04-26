@@ -94,6 +94,13 @@ public class AdministrationControllerImpl implements AdministrationController{
     }
 
     @Override
+    public void deleteLinkCompanyModulo(UnlinkCompanyModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Recebendo requisição para desvincular empresa: {} do módulo: {}", 
+                requestBody.getCompanyId(), requestBody.getModuloId());
+        administrationService.unlinkCompanyModulo(requestBody);
+    }
+
+    @Override
     public List<CompanyModuloDTO> getModulosByCompany() throws BusinessRuleException {
         log.info("Recebendo requisição para buscar módulos da empresa autenticada.");
         return administrationService.listModulosByCompany();
@@ -103,6 +110,13 @@ public class AdministrationControllerImpl implements AdministrationController{
     public void postLinkUserModulo(@RequestBody LinkUserModuloRequest requestBody) throws BusinessRuleException {
         log.info("Recebendo requisição para vincular usuário: {} ao módulo: {}", requestBody.getUserId(), requestBody.getModuloId());
         administrationService.linkUserModulo(requestBody);
+    }
+
+    @Override
+    public void deleteLinkUserModulo(UnlinkUserModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Recebendo requisição para desvincular usuário: {} do módulo: {}", 
+                requestBody.getUserId(), requestBody.getModuloId());
+        administrationService.unlinkUserModulo(requestBody);
     }
 
     @Override

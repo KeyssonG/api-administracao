@@ -158,6 +158,17 @@ public class AdministrationService {
         }
     }
 
+    public void unlinkCompanyModulo(UnlinkCompanyModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Desvinculando empresa: {} do módulo: {}", requestBody.getCompanyId(), requestBody.getModuloId());
+        try {
+            administrationRepository.unlinkCompanyModulo(requestBody.getCompanyId(), requestBody.getModuloId());
+        } catch (Exception e) {
+            log.error("Erro ao desvincular empresa {} do módulo {}: {}", 
+                    requestBody.getCompanyId(), requestBody.getModuloId(), e.getMessage());
+            throw new RuntimeException("Erro ao desvincular empresa do módulo");
+        }
+    }
+
     public List<CompanyModuloResponseDTO> getCompanyModulos() {
         log.info("Buscando todos os vínculos de empresas e módulos.");
         return administrationRepository.getCompanyModulos();
@@ -193,6 +204,26 @@ public class AdministrationService {
             log.error("Erro ao vincular usuário {} ao módulo {} na empresa {}: {}", 
                     requestBody.getUserId(), requestBody.getModuloId(), idEmpresa, e.getMessage());
             throw new BusinessRuleException(ERROR_VINCULAR_USUARIO_MODULO);
+        }
+    }
+
+    public void unlinkUserModulo(UnlinkUserModuloRequest requestBody) throws BusinessRuleException {
+        String token = (String) httpRequest.getAttribute("CleanJwt");
+        Integer idEmpresa = jwtUtil.extractCompanyId(token);
+
+        if (idEmpresa == null) {
+            log.error("ID da empresa não encontrado no token JWT ao desvincular usuário do módulo.");
+            throw new IllegalArgumentException("ID da empresa não encontrado no token.");
+        }
+
+        log.info("Desvinculando usuário: {} do módulo: {} na empresa ID: {}", 
+                requestBody.getUserId(), requestBody.getModuloId(), idEmpresa);
+        try {
+            administrationRepository.unlinkUserModulo(requestBody.getUserId(), idEmpresa, requestBody.getModuloId());
+        } catch (Exception e) {
+            log.error("Erro ao desvincular usuário {} do módulo {} na empresa {}: {}", 
+                    requestBody.getUserId(), requestBody.getModuloId(), idEmpresa, e.getMessage());
+            throw new RuntimeException("Erro ao desvincular usuário do módulo");
         }
     }
 

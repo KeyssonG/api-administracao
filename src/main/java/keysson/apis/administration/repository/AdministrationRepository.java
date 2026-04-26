@@ -72,6 +72,18 @@ public class AdministrationRepository {
             INSERT INTO public.permissoes_modulo (user_id, company_id, modulo_id) VALUES (?, ?, ?)
             """;
 
+    private String SQL_UNLINK_COMPANY_MODULO = """
+            DELETE FROM public.empresa_modulos WHERE company_id = ? AND modulo_id = ?
+            """;
+
+    private String SQL_UNLINK_USER_MODULOS_BY_COMPANY = """
+            DELETE FROM public.permissoes_modulo WHERE company_id = ? AND modulo_id = ?
+            """;
+
+    private String SQL_UNLINK_USER_MODULO = """
+            DELETE FROM public.permissoes_modulo WHERE user_id = ? AND company_id = ? AND modulo_id = ?
+            """;
+
     private String SQL_GET_COMPANY_MODULOS = """
             select em.id, em.company_id, c.name, em.modulo_id, m.nome, em.status, ts.descricao 
             from empresa_modulos em
@@ -208,6 +220,25 @@ public class AdministrationRepository {
             jdbcTemplate.update(SQL_LINK_USER_MODULO, userId, companyId, moduloId);
         } catch (Exception e) {
             throw new RuntimeException("Erro ao vincular usuário ao módulo: " + e.getMessage(), e);
+        }
+    }
+
+    public void unlinkCompanyModulo(int companyId, int moduloId) {
+        try {
+            // Remove todos os funcionários vinculados a este módulo específico para esta empresa (efeito cascata solicitado)
+            jdbcTemplate.update(SQL_UNLINK_USER_MODULOS_BY_COMPANY, companyId, moduloId);
+            // Remove o vínculo da empresa com o módulo
+            jdbcTemplate.update(SQL_UNLINK_COMPANY_MODULO, companyId, moduloId);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao desvincular empresa do módulo: " + e.getMessage(), e);
+        }
+    }
+
+    public void unlinkUserModulo(int userId, int companyId, int moduloId) {
+        try {
+            jdbcTemplate.update(SQL_UNLINK_USER_MODULO, userId, companyId, moduloId);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao desvincular usuário do módulo: " + e.getMessage(), e);
         }
     }
 
