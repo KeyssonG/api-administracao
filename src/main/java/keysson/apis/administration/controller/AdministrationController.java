@@ -167,4 +167,8 @@ public interface AdministrationController {
     @PostMapping("/portal/usuario/modulo")
     @Operation(summary = "Vincula usuário a módulo informando a empresa (Portal).")
     void postLinkUserModuloPortal(@RequestBody PortalLinkUserModuloRequest requestBody) throws BusinessRuleException;
+
+    @DeleteMapping("/portal/usuario/modulo")
+    @Operation(summary = "Desvincula usuário de módulo informando a empresa (Portal).")
+    void deleteLinkUserModuloPortal(@RequestBody PortalUnlinkUserModuloRequest requestBody) throws BusinessRuleException;
 }

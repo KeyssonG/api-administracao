@@ -145,10 +145,17 @@ public class AdministrationControllerImpl implements AdministrationController{
 
     @Override
     public void postLinkUserModuloPortal(PortalLinkUserModuloRequest requestBody) throws BusinessRuleException {
-        log.info("Portal: Recebendo requisição para vincular usuário: {} ao módulo: {} na empresa: {}", 
+        log.info("Portal: Recebendo requisição para vincular usuário: {} ao módulo: {} na empresa: {}",
                 requestBody.getUserId(), requestBody.getModuloId(), requestBody.getCompanyId());
         administrationService.linkUserModuloPortal(requestBody);
     }
 
+    @Override
+    public void deleteLinkUserModuloPortal(PortalUnlinkUserModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Portal: Recebendo requisição para desvincular usuário: {} do módulo: {} na empresa: {}",
+                requestBody.getUserId(), requestBody.getModuloId(), requestBody.getCompanyId());
+        administrationService.unlinkUserModuloPortal(requestBody);
+    }
 
 }
+

@@ -282,4 +282,16 @@ public class AdministrationService {
         }
     }
 
+    public void unlinkUserModuloPortal(PortalUnlinkUserModuloRequest requestBody) throws BusinessRuleException {
+        log.info("Portal: Desvinculando usuário: {} do módulo: {} na empresa ID: {}", 
+                requestBody.getUserId(), requestBody.getModuloId(), requestBody.getCompanyId());
+        try {
+            administrationRepository.unlinkUserModulo(requestBody.getUserId(), requestBody.getCompanyId(), requestBody.getModuloId());
+        } catch (Exception e) {
+            log.error("Portal: Erro ao desvincular usuário {} na empresa {}: {}", 
+                    requestBody.getUserId(), requestBody.getCompanyId(), e.getMessage());
+            throw new RuntimeException("Erro ao desvincular usuário do módulo");
+        }
+    }
+
 }
